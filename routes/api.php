@@ -24,3 +24,6 @@ Route::apiResource('address', App\Http\Controllers\AddressController::class)->mi
 
 // Category
 Route::apiResource('category', App\Http\Controllers\CategoryController::class)->middleware('auth:sanctum');
+
+// Tag
+Route::apiResource('tag', App\Http\Controllers\TagController::class)->middleware('auth:sanctum');
