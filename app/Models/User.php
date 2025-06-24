@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -19,11 +22,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $guarded = ['id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -46,5 +45,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Avatar
+    public static function uploadAvatar(UploadedFile $avatar, string $name): string
+    {
+        $filename = time() . '-' . Str::slug($name) . '.' . $avatar->getClientOriginalExtension();
+        $avatar->storeAs('avatars', $filename, 'public');
+        return $filename;
+    }
+    public function updateAvatar(UploadedFile $avatar, string $name): string
+    {
+        if ($this->avatar && Storage::disk('public')->exists('avatars/' . $this->avatar)) {
+            Storage::disk('public')->delete('avatars/' . $this->avatar);
+        }
+
+        $filename = time() . '-' . Str::slug($name) . '.' . $avatar->getClientOriginalExtension();
+        $avatar->storeAs('avatars', $filename, 'public');
+        return $filename;
     }
 }
