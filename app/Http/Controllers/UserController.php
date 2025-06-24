@@ -58,7 +58,8 @@ class UserController extends Controller
         }
 
         if ($request->hasFile('avatar')) {
-            $data['avatar'] = $user->updateAvatar($request->file('avatar'), $data['name']);
+            $user->deleteAvatar();
+            $data['avatar'] = User::uploadAvatar($request->file('avatar'), $data['name']);
         }
 
         $user->update($data);
@@ -71,6 +72,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $user->deleteAvatar();
         $user->delete();
 
         return response()->json(['message' => 'User deleted.']);

@@ -21,3 +21,6 @@ Route::apiResource('user', App\Http\Controllers\UserController::class)->middlewa
 
 // Address
 Route::apiResource('address', App\Http\Controllers\AddressController::class)->middleware('auth:sanctum');
+
+// Category
+Route::apiResource('category', App\Http\Controllers\CategoryController::class)->middleware('auth:sanctum');

@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -54,14 +55,15 @@ class User extends Authenticatable
         $avatar->storeAs('avatars', $filename, 'public');
         return $filename;
     }
-    public function updateAvatar(UploadedFile $avatar, string $name): string
+    public function deleteAvatar(): void
     {
         if ($this->avatar && Storage::disk('public')->exists('avatars/' . $this->avatar)) {
             Storage::disk('public')->delete('avatars/' . $this->avatar);
         }
+    }
 
-        $filename = time() . '-' . Str::slug($name) . '.' . $avatar->getClientOriginalExtension();
-        $avatar->storeAs('avatars', $filename, 'public');
-        return $filename;
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
     }
 }
