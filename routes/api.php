@@ -17,4 +17,7 @@ Route::prefix('auth')->controller(App\Http\Controllers\AuthController::class)->g
 });
 
 // User
-Route::apiResource('user', App\Http\Controllers\UserController::class)->names('user')->middleware('auth:sanctum');
+Route::apiResource('user', App\Http\Controllers\UserController::class)->middleware('auth:sanctum');
+
+// Address
+Route::apiResource('address', App\Http\Controllers\AddressController::class)->middleware('auth:sanctum');
