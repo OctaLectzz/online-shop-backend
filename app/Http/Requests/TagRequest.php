@@ -21,10 +21,10 @@ class TagRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('tag')?->id ?? null;
+        $tagId = $this->route('tag')?->id ?? null;
 
         return [
-            'name' => 'required|string|max:255|unique:tags,name,' . $id
+            'name' => 'required|string|max:255|unique:tags,name,' . $tagId
         ];
     }
 }

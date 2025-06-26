@@ -24,6 +24,7 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         $data = $request->validated();
+        $data['slug'] = Category::generateUniqueSlug($data['name']);
 
         if ($request->hasFile('image')) {
             $data['image'] = Category::uploadImage($request->file('image'), $data['name']);
@@ -48,6 +49,9 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, Category $category)
     {
         $data = $request->validated();
+        if ($category->name !== $data['name']) {
+            $data['slug'] = Category::generateUniqueSlug($data['name'], $category->category_id);
+        }
 
         if ($request->hasFile('image')) {
             $category->deleteImage();

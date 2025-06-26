@@ -27,3 +27,6 @@ Route::apiResource('category', App\Http\Controllers\CategoryController::class)->
 
 // Tag
 Route::apiResource('tag', App\Http\Controllers\TagController::class)->middleware('auth:sanctum');
+
+// Product
+Route::apiResource('product', App\Http\Controllers\ProductController::class)->middleware('auth:sanctum');

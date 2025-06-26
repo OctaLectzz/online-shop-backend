@@ -14,6 +14,23 @@ class Category extends Model
 
     protected $guarded = ['id'];
 
+    // Slug
+    public static function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $slug = Str::slug($name);
+        $original = $slug;
+        $count = 1;
+
+        while (static::where('slug', $slug)
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()
+        ) {
+            $slug = $original . '-' . $count++;
+        }
+
+        return $slug;
+    }
+
     // Image
     public static function uploadImage(UploadedFile $image, string $name): string
     {
@@ -26,5 +43,10 @@ class Category extends Model
         if ($this->image && Storage::disk('public')->exists('categories/' . $this->image)) {
             Storage::disk('public')->delete('categories/' . $this->image);
         }
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }

@@ -1,0 +1,24 @@
+{
+    "intelephense.environment.includePaths": ["vendor"],
+    "intelephense.stubs": [
+        "Core",
+        "date",
+        "json",
+        "PDO",
+        "Reflection",
+        "standard",
+        "mbstring",
+        "ctype",
+        "openssl",
+        "curl",
+        "fileinfo",
+        "filter",
+        "hash",
+        "pcre",
+        "session",
+        "tokenizer",
+        "xml",
+        "dom",
+        "libxml"
+    ]
+}

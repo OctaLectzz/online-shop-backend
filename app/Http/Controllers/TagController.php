@@ -13,9 +13,9 @@ class TagController extends Controller
      */
     public function index()
     {
-        $tages = Tag::latest()->get();
+        $tags = Tag::latest()->get();
 
-        return TagResource::collection($tages);
+        return TagResource::collection($tags);
     }
 
     /**

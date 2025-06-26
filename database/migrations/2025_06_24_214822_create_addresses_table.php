@@ -29,8 +29,8 @@ return new class extends Migration
             $table->enum('label', ['house', 'office', 'etc']);
             $table->text('notes')->nullable();
             $table->boolean('is_default')->default(false);
-            $table->timestamps();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

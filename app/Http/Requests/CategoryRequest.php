@@ -21,10 +21,10 @@ class CategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('category')?->id ?? null;
+        $categoryId = $this->route('category')?->id ?? null;
 
         return [
-            'slug' => 'required|string|max:255|unique:categories,slug,' . $id,
+            'slug' => 'required|string|max:255|unique:categories,slug,' . $categoryId,
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:3072',
             'name' => 'required|string|max:50',
             'description' => 'nullable'
