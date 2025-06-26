@@ -21,6 +21,7 @@ class UserController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @param \Illuminate\Http\Request $request
      */
     public function store(UserRequest $request)
     {
@@ -46,6 +47,7 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @param \Illuminate\Http\Request $request
      */
     public function update(UserRequest $request, User $user)
     {

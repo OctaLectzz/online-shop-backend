@@ -4,6 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @method \Illuminate\Routing\Route|null route(string|null $param = null)
+ */
 class CategoryRequest extends FormRequest
 {
     /**
@@ -21,7 +24,7 @@ class CategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $categoryId = $this->route('category')?->id ?? null;
+        $categoryId = $this->route('category')?->getKey();
 
         return [
             'slug' => 'required|string|max:255|unique:categories,slug,' . $categoryId,

@@ -4,6 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @method \Illuminate\Routing\Route|null route(string|null $param = null)
+ */
 class ProductRequest extends FormRequest
 {
     /**
@@ -21,7 +24,7 @@ class ProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        $productId = $this->route('product')?->id ?? null;
+        $productId = $this->route('product')?->getKey();
 
         return [
             'sku' => 'required|string|max:255|unique:products,sku,' . $productId,

@@ -9,6 +9,7 @@ use App\Http\Resources\AuthResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -54,9 +55,14 @@ class AuthController extends Controller
         }
     }
 
+
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $token = $request->user()?->currentAccessToken();
+
+        if ($token instanceof PersonalAccessToken) {
+            $token->delete();
+        }
 
         return response()->json([
             'status' => 'success'
@@ -74,7 +80,7 @@ class AuthController extends Controller
 
     public function editprofile(Request $request)
     {
-        $user = User::find(auth()->id());
+        $user = User::find(Auth::id());
 
         $data = $request->validate([
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:3072',
@@ -97,7 +103,7 @@ class AuthController extends Controller
 
     public function changepassword(Request $request)
     {
-        $user = User::findOrFail(auth()->id());
+        $user = User::findOrFail(Auth::id());
 
         $request->validate([
             'current_password' => 'required|string|min:8',

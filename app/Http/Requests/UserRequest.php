@@ -5,6 +5,9 @@ namespace App\Http\Requests;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @method \Illuminate\Routing\Route|null route(string|null $param = null)
+ */
 class UserRequest extends FormRequest
 {
     /**
@@ -22,8 +25,7 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $user = $this->route('user');
-        $userId = $user instanceof User ? $user->id : $user;
+        $userId = $this->route('user')?->getKey();
 
         return [
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:3072',

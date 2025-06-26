@@ -4,6 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @method \Illuminate\Routing\Route|null route(string|null $param = null)
+ */
 class TagRequest extends FormRequest
 {
     /**
@@ -21,7 +24,7 @@ class TagRequest extends FormRequest
      */
     public function rules(): array
     {
-        $tagId = $this->route('tag')?->id ?? null;
+        $$tagId = $this->route('tag')?->getKey();
 
         return [
             'name' => 'required|string|max:255|unique:tags,name,' . $tagId

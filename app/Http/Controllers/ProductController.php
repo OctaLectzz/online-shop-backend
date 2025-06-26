@@ -6,6 +6,7 @@ use App\Models\Tag;
 use App\Models\Product;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -23,12 +24,13 @@ class ProductController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @param \Illuminate\Http\Request $request
      */
     public function store(ProductRequest $request)
     {
         try {
             $data = $request->validated();
-            $data['created_by'] = auth()->id();
+            $data['created_by'] = Auth::id();
             $data['slug'] = Product::generateUniqueSlug($data['name']);
 
             $product = DB::transaction(function () use ($data, $request) {
@@ -71,6 +73,7 @@ class ProductController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @param \Illuminate\Http\Request $request
      */
     public function update(ProductRequest $request, Product $product)
     {
