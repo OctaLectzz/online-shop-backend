@@ -37,7 +37,7 @@ class ProductRequest extends FormRequest
             'height' => 'nullable|integer',
             'width' => 'nullable|integer',
             'length' => 'nullable|integer',
-            'status' => 'required|boolean',
+            'status' => 'boolean',
             'images' => 'nullable|array',
             'images.*' => 'required|image|mimes:jpg,jpeg,png|max:3072',
             'tags' => 'nullable|array',

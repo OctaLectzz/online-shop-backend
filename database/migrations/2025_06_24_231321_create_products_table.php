@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('height')->nullable();
             $table->integer('width')->nullable();
             $table->integer('length')->nullable();
-            $table->boolean('status');
+            $table->boolean('status')->default(true);
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();

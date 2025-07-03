@@ -62,9 +62,13 @@ class Product extends Model
     {
         return $this->belongsToMany(Tag::class, 'product_tags');
     }
-    public function user()
+    public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }
 

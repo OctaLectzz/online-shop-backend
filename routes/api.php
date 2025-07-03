@@ -33,3 +33,6 @@ Route::apiResource('product', App\Http\Controllers\ProductController::class);
 
 // Review
 Route::apiResource('review', App\Http\Controllers\ReviewController::class);
+
+// Promo
+Route::apiResource('promo', App\Http\Controllers\PromoController::class);
