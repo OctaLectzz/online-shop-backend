@@ -6268,3 +6268,18 @@ Stack trace:
 "} 
 [2025-06-26 18:12:58] local.DEBUG: ProductRequest input:  
 [2025-06-26 18:12:58] local.DEBUG: Files:  
+[2025-07-03 16:06:11] local.ERROR: __VSCODE_LARAVEL_STARTUP_ERROR__: rename(C:\School Experience\Projects\online-shop\online-shop-backend\bootstrap\cache\serE90E.tmp,C:\School Experience\Projects\online-shop\online-shop-backend\bootstrap\cache\services.php): Access is denied (code: 5) {"exception":"[object] (Error(code: 0): __VSCODE_LARAVEL_STARTUP_ERROR__: rename(C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\bootstrap\\cache\\serE90E.tmp,C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\bootstrap\\cache\\services.php): Access is denied (code: 5) at C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\vendor\\_laravel_ide\\discover-1e7ea3cf42a2f9b84f3de09530e2c135.php:33)
+[stacktrace]
+#0 C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\vendor\\_laravel_ide\\discover-1e7ea3cf42a2f9b84f3de09530e2c135.php(62): LaravelVsCode::startupError(Object(ErrorException))
+#1 {main}
+"} 
+[2025-07-03 16:06:11] local.ERROR: __VSCODE_LARAVEL_STARTUP_ERROR__: rename(C:\School Experience\Projects\online-shop\online-shop-backend\bootstrap\cache\serE900.tmp,C:\School Experience\Projects\online-shop\online-shop-backend\bootstrap\cache\services.php): Access is denied (code: 5) {"exception":"[object] (Error(code: 0): __VSCODE_LARAVEL_STARTUP_ERROR__: rename(C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\bootstrap\\cache\\serE900.tmp,C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\bootstrap\\cache\\services.php): Access is denied (code: 5) at C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\vendor\\_laravel_ide\\discover-d769f81c5eaf96f1f253a56481405376.php:33)
+[stacktrace]
+#0 C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\vendor\\_laravel_ide\\discover-d769f81c5eaf96f1f253a56481405376.php(62): LaravelVsCode::startupError(Object(ErrorException))
+#1 {main}
+"} 
+[2025-07-03 16:06:11] local.ERROR: __VSCODE_LARAVEL_STARTUP_ERROR__: rename(C:\School Experience\Projects\online-shop\online-shop-backend\bootstrap\cache\serE8B0.tmp,C:\School Experience\Projects\online-shop\online-shop-backend\bootstrap\cache\services.php): Access is denied (code: 5) {"exception":"[object] (Error(code: 0): __VSCODE_LARAVEL_STARTUP_ERROR__: rename(C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\bootstrap\\cache\\serE8B0.tmp,C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\bootstrap\\cache\\services.php): Access is denied (code: 5) at C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\vendor\\_laravel_ide\\discover-9abd86d674d0ba851f4ac7b31349196a.php:33)
+[stacktrace]
+#0 C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\vendor\\_laravel_ide\\discover-9abd86d674d0ba851f4ac7b31349196a.php(62): LaravelVsCode::startupError(Object(ErrorException))
+#1 {main}
+"} 
