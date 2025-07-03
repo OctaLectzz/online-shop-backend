@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             TagSeeder::class,
             ProductSeeder::class,
             ReviewSeeder::class,
-            PromoSeeder::class
+            PromoSeeder::class,
+            CartSeeder::class
         ]);
     }
 }

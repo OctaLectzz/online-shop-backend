@@ -36,3 +36,7 @@ Route::apiResource('review', App\Http\Controllers\ReviewController::class);
 
 // Promo
 Route::apiResource('promo', App\Http\Controllers\PromoController::class);
+
+// Cart
+Route::get('cart/getbyuser', [App\Http\Controllers\CartController::class, 'getByUser']);
+Route::apiResource('cart', App\Http\Controllers\CartController::class);

@@ -77,4 +77,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Promo::class, 'created_by');
     }
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
 }

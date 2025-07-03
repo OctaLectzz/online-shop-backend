@@ -18,7 +18,7 @@ class ReviewSeeder extends Seeder
         $userIds = User::pluck('id')->all();
 
         if (empty($productIds) || empty($userIds)) {
-            $this->command->warn('Seeder dibatalkan: tidak ada produk atau user di database.');
+            $this->command->warn('ReviewSeeder skipped: No products or users found.');
             return;
         }
 
