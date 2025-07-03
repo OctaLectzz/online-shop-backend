@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('invoice')->unique();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('promo_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->dateTime('order_date');
             $table->unsignedBigInteger('total_price');
             $table->unsignedBigInteger('discount_value')->nullable();
             $table->unsignedBigInteger('subtotal_price');
             $table->text('note')->nullable();
+            $table->dateTime('order_date');
             $table->enum('order_status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled']);
             $table->enum('payment_status', ['unpaid', 'paid', 'refunded']);
             $table->timestamps();

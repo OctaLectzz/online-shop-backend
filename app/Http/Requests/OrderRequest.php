@@ -27,7 +27,6 @@ class OrderRequest extends FormRequest
             'discount_value' => 'nullable|numeric|min:0',
             'subtotal_price' => 'required|numeric|min:0',
             'note' => 'nullable|string',
-            'order_date' => 'required|date',
             'order_status' => 'required|in:pending,processing,shipped,delivered,cancelled',
             'payment_status' => 'required|in:unpaid,paid,refunded',
             'items' => 'required|array|min:1',

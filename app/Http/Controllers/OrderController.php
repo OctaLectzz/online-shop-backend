@@ -37,6 +37,7 @@ class OrderController extends Controller
             $data = $request->validated();
             $data['user_id'] = Auth::id();
             $data['invoice'] = Order::generateUniqueInvoice();
+            $data['order_date'] = now();
 
             $order = DB::transaction(function () use ($data) {
                 $items = $data['items'];
