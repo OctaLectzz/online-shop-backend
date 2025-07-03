@@ -62,7 +62,7 @@ class ProductController extends Controller
             Log::error('Failed to store product', ['error' => $e->getMessage()]);
 
             return response()->json([
-                'message' => 'Gagal menyimpan produk.',
+                'message' => 'Product failed to create',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -109,7 +109,7 @@ class ProductController extends Controller
             Log::error('Failed to update product', ['error' => $e->getMessage()]);
 
             return response()->json([
-                'message' => 'Gagal memperbarui produk.',
+                'message' => 'Product failed to update',
                 'error' => $e->getMessage(),
             ], 500);
         }

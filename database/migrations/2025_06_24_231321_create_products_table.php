@@ -19,12 +19,13 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->longText('description');
             $table->unsignedBigInteger('price');
-            $table->integer('stock');
+            $table->unsignedBigInteger('stock');
             $table->integer('weight')->nullable();
             $table->integer('height')->nullable();
             $table->integer('width')->nullable();
             $table->integer('length')->nullable();
             $table->boolean('status')->default(true);
+            $table->unsignedBigInteger('sold')->default(0);
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();

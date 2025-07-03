@@ -30,6 +30,7 @@ class ProductResource extends JsonResource
                 'length' => $this->length,
             ],
             'status' => $this->status,
+            'sold' => $this->sold,
             'created_by' => $this->creator->name ?? null,
             'images' => $this->images->pluck('image'),
             'tags' => $this->tags->pluck('name'),

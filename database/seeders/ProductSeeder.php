@@ -36,6 +36,7 @@ class ProductSeeder extends Seeder
             'width' => 15,
             'length' => 20,
             'status' => true,
+            'sold' => 124,
             'category_id' => 1,
             'created_by' => 1
         ]);
