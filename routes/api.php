@@ -10,23 +10,23 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->controller(App\Http\Controllers\AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
-    Route::get('/logout', 'logout')->middleware('auth:sanctum');
-    Route::get('/profile', 'profile')->middleware('auth:sanctum');
-    Route::put('/profile/edit', 'editprofile')->middleware('auth:sanctum');
-    Route::post('/profile/changepassword', 'changepassword')->middleware('auth:sanctum');
+    Route::get('/logout', 'logout');
+    Route::get('/profile', 'profile');
+    Route::put('/profile/edit', 'editprofile');
+    Route::post('/profile/changepassword', 'changepassword');
 });
 
 // User
-Route::apiResource('user', App\Http\Controllers\UserController::class)->middleware('auth:sanctum');
+Route::apiResource('user', App\Http\Controllers\UserController::class);
 
 // Address
-Route::apiResource('address', App\Http\Controllers\AddressController::class)->middleware('auth:sanctum');
+Route::apiResource('address', App\Http\Controllers\AddressController::class);
 
 // Category
-Route::apiResource('category', App\Http\Controllers\CategoryController::class)->middleware('auth:sanctum');
+Route::apiResource('category', App\Http\Controllers\CategoryController::class);
 
 // Tag
-Route::apiResource('tag', App\Http\Controllers\TagController::class)->middleware('auth:sanctum');
+Route::apiResource('tag', App\Http\Controllers\TagController::class);
 
 // Product
-Route::apiResource('product', App\Http\Controllers\ProductController::class)->middleware('auth:sanctum');
+Route::apiResource('product', App\Http\Controllers\ProductController::class);
