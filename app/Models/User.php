@@ -11,7 +11,6 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -62,7 +61,7 @@ class User extends Authenticatable
         }
     }
 
-    public function addresses(): HasMany
+    public function addresses()
     {
         return $this->hasMany(Address::class);
     }

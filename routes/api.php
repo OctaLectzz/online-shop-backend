@@ -30,3 +30,6 @@ Route::apiResource('tag', App\Http\Controllers\TagController::class);
 
 // Product
 Route::apiResource('product', App\Http\Controllers\ProductController::class);
+
+// Review
+Route::apiResource('review', App\Http\Controllers\ReviewController::class);
