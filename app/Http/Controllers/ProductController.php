@@ -35,8 +35,8 @@ class ProductController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['created_by'] = Auth::id();
             $data['slug'] = Product::generateUniqueSlug($data['name']);
+            $data['created_by'] = Auth::id();
 
             $product = DB::transaction(function () use ($data, $request) {
                 $product = Product::create($data);

@@ -42,6 +42,10 @@ class Order extends Model
     {
         return $this->hasMany(Pay::class);
     }
+    public function shipments()
+    {
+        return $this->hasMany(Shipment::class);
+    }
 }
 
 class OrderItem extends Model

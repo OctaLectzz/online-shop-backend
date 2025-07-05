@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * @method \Illuminate\Routing\Route|null route(string|null $param = null)
  */
-class TagRequest extends FormRequest
+class ShipmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,15 @@ class TagRequest extends FormRequest
      */
     public function rules(): array
     {
-        $tagId = $this->route('tag')?->getKey();
+        $shipmentId = $this->route('shipment')?->getKey();
 
         return [
-            'name' => 'required|string|max:255|unique:tags,name,' . $tagId
+            'order_id' => 'required|exists:orders,id',
+            'shipping_service' => 'required|string|max:255',
+            'courier_name' => 'nullable|string|max:255',
+            'shipping_estimation' => 'nullable|string|max:255',
+            'shipping_description' => 'nullable|string|max:255',
+            'tracking_number' => 'required|string|unique:shipments,tracking_number,' . $shipmentId,
         ];
     }
 }
