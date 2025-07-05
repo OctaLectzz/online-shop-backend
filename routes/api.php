@@ -46,3 +46,6 @@ Route::apiResource('payment', App\Http\Controllers\PaymentController::class);
 
 // Order
 Route::apiResource('order', App\Http\Controllers\OrderController::class);
+
+// Pay
+Route::apiResource('pay', App\Http\Controllers\PayController::class);

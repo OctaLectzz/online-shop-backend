@@ -22,7 +22,7 @@ class PaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:3072',
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:3072',
             'name' => 'required|string|max:50',
             'type' => 'required|in:bank,ewallet,qris,cash',
             'account_number' => 'nullable|string',

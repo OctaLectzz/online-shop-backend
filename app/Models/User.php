@@ -85,4 +85,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+    public function pays()
+    {
+        return $this->hasMany(Pay::class, 'validated_by');
+    }
 }

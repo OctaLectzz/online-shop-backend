@@ -31,4 +31,9 @@ class Payment extends Model
             Storage::disk('public')->delete('payments/' . $this->image);
         }
     }
+
+    public function pays()
+    {
+        return $this->hasMany(Pay::class);
+    }
 }

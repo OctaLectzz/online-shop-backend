@@ -38,6 +38,10 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+    public function pays()
+    {
+        return $this->hasMany(Pay::class);
+    }
 }
 
 class OrderItem extends Model
