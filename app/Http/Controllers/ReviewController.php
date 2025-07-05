@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use App\Http\Requests\ReviewRequest;
 use App\Http\Resources\ReviewResource;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
@@ -29,7 +30,17 @@ class ReviewController extends Controller
     public function store(ReviewRequest $request)
     {
         $data = $request->validated();
+        $data['user_id'] = Auth::id();
 
+        $existingReview = Review::where('user_id', $data['user_id'])->where('product_id', $data['product_id'])->first();
+
+        if ($existingReview) {
+            return response()->json([
+                'message' => 'You have already left a review for this product.'
+            ], 422);
+        }
+
+        // Jika belum, buat review baru
         $review = Review::create($data);
 
         return new ReviewResource($review);
