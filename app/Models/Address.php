@@ -12,7 +12,7 @@ class Address extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'is_default' => 'boolean',
+        'is_default' => 'boolean'
     ];
 
     public function user()

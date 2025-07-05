@@ -41,7 +41,7 @@ Route::apiResource('promo', App\Http\Controllers\PromoController::class);
 Route::get('cart/getbyuser', [App\Http\Controllers\CartController::class, 'getByUser']);
 Route::apiResource('cart', App\Http\Controllers\CartController::class);
 
-// Order
+// Payment
 Route::apiResource('payment', App\Http\Controllers\PaymentController::class);
 
 // Order

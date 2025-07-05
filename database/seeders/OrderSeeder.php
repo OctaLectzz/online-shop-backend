@@ -23,7 +23,7 @@ class OrderSeeder extends Seeder
         }
 
         $order = Order::create([
-            'invoice' => 'INV-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(8)),
+            'invoice' => 'INV' . now()->format('YmdHis') . strtoupper(Str::random(8)),
             'user_id' => $user->id,
             'promo_id' => null,
             'total_price' => 100000,

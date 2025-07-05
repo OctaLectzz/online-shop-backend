@@ -20,7 +20,7 @@ class Order extends Model
     public static function generateUniqueInvoice(): string
     {
         do {
-            $invoice = 'INV-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(8));
+            $invoice = 'INV' . now()->format('YmdHis') . strtoupper(Str::random(8));
         } while (Order::where('invoice', $invoice)->exists());
 
         return $invoice;
