@@ -9851,3 +9851,19 @@ Stack trace:
 #61 C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\artisan(16): Illuminate\\Foundation\\Application->handleCommand(Object(Symfony\\Component\\Console\\Input\\ArgvInput))
 #62 {main}
 "} 
+[2025-07-05 23:19:36] local.ERROR: Namespace declaration statement has to be the very first statement or after any declare call in the script {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Namespace declaration statement has to be the very first statement or after any declare call in the script at C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\app\\Models\\Faq.php:3)
+[stacktrace]
+#0 {main}
+"} 
+[2025-07-05 23:19:53] local.ERROR: Trait "App\Models\SoftDeletes" not found {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Trait \"App\\Models\\SoftDeletes\" not found at C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\app\\Models\\Faq.php:7)
+[stacktrace]
+#0 {main}
+"} 
+[2025-07-05 23:19:54] local.ERROR: Trait "App\Models\SoftDeletes" not found {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Trait \"App\\Models\\SoftDeletes\" not found at C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\app\\Models\\Faq.php:7)
+[stacktrace]
+#0 {main}
+"} 
+[2025-07-05 23:19:56] local.ERROR: Trait "App\Models\SoftDeletes" not found {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Trait \"App\\Models\\SoftDeletes\" not found at C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\app\\Models\\Faq.php:7)
+[stacktrace]
+#0 {main}
+"} 

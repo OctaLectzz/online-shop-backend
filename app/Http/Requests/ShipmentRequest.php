@@ -32,7 +32,7 @@ class ShipmentRequest extends FormRequest
             'courier_name' => 'nullable|string|max:255',
             'shipping_estimation' => 'nullable|string|max:255',
             'shipping_description' => 'nullable|string|max:255',
-            'tracking_number' => 'required|string|unique:shipments,tracking_number,' . $shipmentId,
+            'tracking_number' => 'required|string|unique:shipments,tracking_number,' . $shipmentId
         ];
     }
 }

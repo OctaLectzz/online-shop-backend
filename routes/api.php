@@ -52,3 +52,6 @@ Route::apiResource('pay', App\Http\Controllers\PayController::class);
 
 // Shipment
 Route::apiResource('shipment', App\Http\Controllers\ShipmentController::class);
+
+// Faq
+Route::apiResource('faq', App\Http\Controllers\FaqController::class);
