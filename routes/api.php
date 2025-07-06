@@ -55,3 +55,7 @@ Route::apiResource('shipment', App\Http\Controllers\ShipmentController::class);
 
 // Faq
 Route::apiResource('faq', App\Http\Controllers\FaqController::class);
+
+// Contact
+Route::apiResource('contact', App\Http\Controllers\ContactController::class)->except(['update']);
+Route::put('/contact', [App\Http\Controllers\ContactController::class, 'update']);

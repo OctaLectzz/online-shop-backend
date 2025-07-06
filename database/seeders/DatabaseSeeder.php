@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
             OrderSeeder::class,
             PaySeeder::class,
             ShipmentSeeder::class,
-            FaqSeeder::class
+            FaqSeeder::class,
+            ContactSeeder::class
         ]);
     }
 }

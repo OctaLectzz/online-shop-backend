@@ -9867,3 +9867,7 @@ Stack trace:
 [stacktrace]
 #0 {main}
 "} 
+[2025-07-06 17:54:07] local.ERROR: Trait "App\Models\SoftDeletes" not found {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Trait \"App\\Models\\SoftDeletes\" not found at C:\\School Experience\\Projects\\online-shop\\online-shop-backend\\app\\Models\\Contact.php:7)
+[stacktrace]
+#0 {main}
+"} 
