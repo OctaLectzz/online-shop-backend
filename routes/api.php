@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Setting;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -59,3 +60,10 @@ Route::apiResource('faq', App\Http\Controllers\FaqController::class);
 // Contact
 Route::apiResource('contact', App\Http\Controllers\ContactController::class)->except(['update']);
 Route::put('/contact', [App\Http\Controllers\ContactController::class, 'update']);
+
+// Setting
+
+Route::bind('setting', function ($value) {
+    return Setting::where('key', $value)->firstOrFail();
+});
+Route::apiResource('setting', App\Http\Controllers\SettingController::class);
