@@ -62,8 +62,14 @@ Route::apiResource('contact', App\Http\Controllers\ContactController::class)->ex
 Route::put('/contact', [App\Http\Controllers\ContactController::class, 'update']);
 
 // Setting
-
 Route::bind('setting', function ($value) {
     return Setting::where('key', $value)->firstOrFail();
 });
 Route::apiResource('setting', App\Http\Controllers\SettingController::class);
+
+// Log
+Route::get('/log', [App\Http\Controllers\LogController::class, 'index']);
+Route::get('/log/{log}', [App\Http\Controllers\LogController::class, 'show']);
+Route::post('/log/read-all', [App\Http\Controllers\LogController::class, 'markAllAsRead']);
+Route::delete('/log/{log}', [App\Http\Controllers\LogController::class, 'destroy']);
+Route::delete('/log', [App\Http\Controllers\LogController::class, 'destroyAll']);

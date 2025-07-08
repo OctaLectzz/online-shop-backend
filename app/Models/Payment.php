@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use App\Helpers\ActivityLogger;
 
 class Payment extends Model
 {
@@ -30,6 +32,22 @@ class Payment extends Model
         if ($this->image && Storage::disk('public')->exists('payments/' . $this->image)) {
             Storage::disk('public')->delete('payments/' . $this->image);
         }
+    }
+
+    // Activity
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            ActivityLogger::log('create', class_basename($model), $model->getKey(), (Auth::check() ? Auth::user()->name : 'System') . ' Created ' . class_basename($model));
+        });
+
+        static::updated(function ($model) {
+            ActivityLogger::log('update', class_basename($model), $model->getKey(), (Auth::check() ? Auth::user()->name : 'System') . ' Updated ' . class_basename($model));
+        });
+
+        static::deleted(function ($model) {
+            ActivityLogger::log('delete', class_basename($model), $model->getKey(), (Auth::check() ? Auth::user()->name : 'System') . ' Deleted ' . class_basename($model));
+        });
     }
 
     public function pays()

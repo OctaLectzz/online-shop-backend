@@ -33,7 +33,7 @@ class PayRequest extends FormRequest
             'transfer_amount' => 'required|numeric|min:0',
             'transfer_proof' => $payId ? 'nullable|image|mimes:jpg,jpeg,png|max:3072' : 'required|image|mimes:jpg,jpeg,png|max:3072',
             'validation_status' => 'nullable|in:pending,accepted,rejected',
-            'admin_notes' => 'nullable',
+            'admin_notes' => 'nullable|string',
             'validated_by' => 'nullable|exists:users,id'
         ];
     }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Pay;
 use App\Http\Requests\PayRequest;
 use App\Http\Resources\PayResource;
+use Illuminate\Support\Facades\Auth;
+use App\Helpers\ActivityLogger;
 
 class PayController extends Controller
 {
@@ -37,6 +39,8 @@ class PayController extends Controller
 
         $pay = Pay::create($data);
 
+        ActivityLogger::log('payment', 'pay', $pay->id, (Auth::check() ? Auth::user()->name : 'Someone') . ' make a payment');
+
         return new PayResource($pay);
     }
 
@@ -54,6 +58,12 @@ class PayController extends Controller
      */
     public function update(PayRequest $request, Pay $pay)
     {
+        if (in_array($pay->validation_status, ['accepted', 'rejected'])) {
+            return response()->json([
+                'message' => 'This payment has already been validated and cannot be changed.'
+            ], 422);
+        }
+
         $data = $request->validated();
 
         if ($request->hasFile('transfer_proof')) {
@@ -61,7 +71,22 @@ class PayController extends Controller
             $data['transfer_proof'] = Pay::uploadImage($request->file('transfer_proof'));
         }
 
+        if (in_array($data['validation_status'] ?? '', ['accepted', 'rejected'])) {
+            $data['validated_by'] = Auth::id();
+        }
+
         $pay->update($data);
+
+        $userName = $pay->order?->user?->name ?? 'Unknown User';
+
+        // Activity
+        if ($data['validation_status'] === 'accepted') {
+            ActivityLogger::log('validation_status', 'pay', $pay->id, Auth::user()->name . ' accepted payment from ' . $userName);
+        } elseif ($data['validation_status'] === 'rejected') {
+            ActivityLogger::log('validation_status', 'pay', $pay->id, Auth::user()->name . ' rejected payment from ' . $userName);
+        } else {
+            ActivityLogger::log('validation_status', 'pay', $pay->id, Auth::user()->name . ' updated payment info for ' . $userName);
+        }
 
         return new PayResource($pay);
     }
@@ -73,6 +98,8 @@ class PayController extends Controller
     {
         $pay->deleteImage();
         $pay->delete();
+
+        ActivityLogger::log('delete', 'pay', $pay->id, (Auth::check() ? Auth::user()->name : 'Someone') . ' deleted payment confirmation');
 
         return response()->json(['message' => 'Pay deleted.']);
     }

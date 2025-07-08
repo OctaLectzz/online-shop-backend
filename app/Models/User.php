@@ -11,6 +11,8 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use App\Helpers\ActivityLogger;
 
 class User extends Authenticatable
 {
@@ -61,6 +63,22 @@ class User extends Authenticatable
         }
     }
 
+    // Activity
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            ActivityLogger::log('create', class_basename($model), $model->getKey(), (Auth::check() ? Auth::user()->name : 'System') . ' Created ' . class_basename($model));
+        });
+
+        static::updated(function ($model) {
+            ActivityLogger::log('update', class_basename($model), $model->getKey(), (Auth::check() ? Auth::user()->name : 'System') . ' Updated ' . class_basename($model));
+        });
+
+        static::deleted(function ($model) {
+            ActivityLogger::log('delete', class_basename($model), $model->getKey(), (Auth::check() ? Auth::user()->name : 'System') . ' Deleted ' . class_basename($model));
+        });
+    }
+
     public function addresses()
     {
         return $this->hasMany(Address::class);
@@ -92,5 +110,15 @@ class User extends Authenticatable
     public function shipments()
     {
         return $this->hasMany(Pay::class, 'processed_by');
+    }
+    public function logs()
+    {
+        return $this->hasMany(Log::class);
+    }
+    public function logsRead()
+    {
+        return $this->belongsToMany(Log::class, 'log_reads')
+            ->withPivot('read_at')
+            ->withTimestamps();
     }
 }
