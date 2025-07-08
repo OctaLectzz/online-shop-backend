@@ -16,8 +16,8 @@ class SettingSeeder extends Seeder
             ['key' => 'site_name', 'value' => 'Toko Hebat'],
             ['key' => 'description', 'value' => 'Tempat belanja terpercaya'],
             ['key' => 'about_us', 'value' => 'Kami adalah toko terpercaya sejak 2000'],
-            ['key' => 'primary_color', 'value' => '#4F46E5'],
-            ['key' => 'secondary_color', 'value' => '#10B981'],
+            ['key' => 'light_color', 'value' => 'lara-light-blue'],
+            ['key' => 'dark_color', 'value' => 'lara-dark-blue']
         ]);
     }
 }
