@@ -28,7 +28,6 @@ class ContactResource extends JsonResource
             'linkedin' => $this->linkedin,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
-
         ];
     }
 }

@@ -11,7 +11,7 @@ use App\Models\Setting;
 Route::prefix('auth')->controller(App\Http\Controllers\AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
-    Route::get('/logout', 'logout');
+    Route::post('/logout', 'logout');
     Route::get('/profile', 'profile');
     Route::put('/profile/edit', 'editprofile');
     Route::post('/profile/changepassword', 'changepassword');
