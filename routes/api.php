@@ -18,7 +18,7 @@ Route::prefix('auth')->controller(App\Http\Controllers\AuthController::class)->g
 });
 
 // User
-Route::apiResource('user', App\Http\Controllers\UserController::class);
+Route::apiResource('user', App\Http\Controllers\UserController::class)->middleware('formdata');
 
 // Address
 Route::apiResource('address', App\Http\Controllers\AddressController::class);
