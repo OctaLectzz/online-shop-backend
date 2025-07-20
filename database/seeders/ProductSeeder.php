@@ -25,13 +25,19 @@ class ProductSeeder extends Seeder
 
         // Product
         $product = Product::create([
-            'slug' => 'produk-pertama',
+            'slug' => 'iphone-12-pro-max',
             'sku' => 'PRD001',
-            'name' => 'Produk Pertama',
-            'description' => 'Deskripsi produk pertama',
-            'price' => 100000,
+            'name' => 'iPhone 12 Pro Max',
+            'description' => "Seperti saudaranya yang lain, desain iPhone 12 Pro Max mempunyai sentuhan nostalgia tapi juga modern. Hal itu karena bingkai handphone yang terinspirasi dari iPhone 4 yang memberikan sentuhan klasik ke handphone baru ini. Selain bingkai, iPhone 12 Pro juga mempunyai Ceramic Shield untuk layarnya, sehingga layarnya lebih kokoh dan tahan banting.
+
+            Tapi tentu saja, masih ada perbedaan di antara iPhone 12 Pro Max dan iPhone 12 lainnya!
+
+            Perbedaan pertama adalah ukuran dan kualitas layar iPhone 12 Pro Max. iPhone 12 Pro Max mempunyai layar OLED sebesar 6.7 inci. Ukurannya cukup besar, bahkan lebih besar daripada handphone lain seperti Samsung Galaxy Note 20 Ultra.
+
+            Kualitas layar milik iPhone 12 Pro Max juga mendapat upgrade dari Apple. Layar handphone yang harus dipegang dengan dua tangan ini sangat cerah, warna yang jelas, dan kita bisa menonton video HDR dengan baik. Handphone ini juga dilengkapi dengan stereo yang akan menemani kamu saat menonton video atau mendengarkan musik.",
+            'price' => 11999000,
             'stock' => 50,
-            'weight' => 500,
+            'weight' => 30,
             'height' => 10,
             'width' => 15,
             'length' => 20,
@@ -42,7 +48,7 @@ class ProductSeeder extends Seeder
         ]);
 
         // Image
-        $images = ['produk-pertama-1.jpg', 'produk-pertama-2.jpg'];
+        $images = ['iphone-12-pro-max-1.jpg', 'iphone-12-pro-max-2.jpg', 'iphone-12-pro-max-3.jpg'];
         foreach ($images as $img) {
             $product->images()->create([
                 'image' => $img

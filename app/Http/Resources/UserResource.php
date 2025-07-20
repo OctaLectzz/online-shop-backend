@@ -22,6 +22,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone_number' => $this->phone_number,
             'status' => $this->status,
+            'addresses' => $this->addresses ? AddressResource::collection($this->addresses) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

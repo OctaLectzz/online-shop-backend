@@ -17,7 +17,7 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'slug' => $this->slug,
-            'image' => $this->image,
+            'image' => $this->image ? asset('storage/categories/' . $this->image) : null,
             'name' => $this->name,
             'description' => $this->description,
             'created_at' => $this->created_at,

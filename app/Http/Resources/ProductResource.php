@@ -32,7 +32,9 @@ class ProductResource extends JsonResource
             'status' => $this->status,
             'sold' => $this->sold,
             'created_by' => $this->creator->name ?? null,
-            'images' => $this->images->pluck('image'),
+            'images' => $this->images->isNotEmpty() ? $this->images->map(function ($image) {
+                return asset('storage/products/' . $image->image);
+            })->all() : null,
             'tags' => $this->tags->pluck('name'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at

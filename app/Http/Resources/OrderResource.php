@@ -28,14 +28,16 @@ class OrderResource extends JsonResource
             'order_date' => $this->order_date,
             'order_status' => $this->order_status,
             'payment_status' => $this->payment_status,
-            'items' => [
-                'id' => $this->id,
-                'product_id' => $this->product_id,
-                'product' => new ProductResource($this->product),
-                'quantity' => $this->quantity,
-                'unit_price' => $this->unit_price,
-                'total_price' => $this->total_price
-            ],
+            'items' => $this->items->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'product_id' => $item->product_id,
+                    'product' => $item->product ? new ProductResource($item->product) : null,
+                    'quantity' => $item->quantity,
+                    'unit_price' => $item->unit_price,
+                    'total_price' => $item->total_price
+                ];
+            }),
             'created_at' => $this->created_at
         ];
     }

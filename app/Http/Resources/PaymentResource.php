@@ -16,7 +16,7 @@ class PaymentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $this->image,
+            'image' => $this->image ? asset('storage/payments/' . $this->image) : null,
             'name' => $this->name,
             'type' => $this->type,
             'account_number' => $this->account_number,

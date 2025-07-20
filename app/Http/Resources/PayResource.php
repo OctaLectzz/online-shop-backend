@@ -22,7 +22,7 @@ class PayResource extends JsonResource
             'payment' => new PaymentResource($this->payment),
             'transfer_date' => $this->transfer_date,
             'transfer_amount' => $this->transfer_amount,
-            'transfer_proof' => $this->transfer_proof,
+            'transfer_proof' => $this->transfer_proof ? asset('storage/pays/' . $this->transfer_proof) : null,
             'validation_status' => $this->validation_status,
             'admin_notes' => $this->admin_notes,
             'validated_by' => $this->validator ? $this->validator->name : null,
