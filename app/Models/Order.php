@@ -18,6 +18,11 @@ class Order extends Model
         'order_date' => 'datetime'
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'invoice';
+    }
+
     // Invoice
     public static function generateUniqueInvoice(): string
     {

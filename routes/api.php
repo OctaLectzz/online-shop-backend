@@ -46,6 +46,7 @@ Route::apiResource('cart', App\Http\Controllers\CartController::class);
 Route::apiResource('payment', App\Http\Controllers\PaymentController::class)->middleware('formdata');
 
 // Order
+Route::get('order/getbyuser', [App\Http\Controllers\OrderController::class, 'getByUser']);
 Route::apiResource('order', App\Http\Controllers\OrderController::class);
 
 // Pay

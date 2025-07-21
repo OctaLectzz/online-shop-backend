@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
-use App\Http\Requests\OrderRequest;
-use App\Http\Resources\OrderResource;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\OrderRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\OrderResource;
 
 class OrderController extends Controller
 {
@@ -28,6 +29,16 @@ class OrderController extends Controller
     }
 
     /**
+     * Display a listing by user of the resource.
+     */
+    public function getByUser()
+    {
+        $carts = Order::where('user_id', Auth::id())->latest()->get();
+
+        return OrderResource::collection($carts);
+    }
+
+    /**
      * Store a newly created resource in storage.
      * @param \Illuminate\Http\Request $request
      */
@@ -38,6 +49,8 @@ class OrderController extends Controller
             $data['user_id'] = Auth::id();
             $data['invoice'] = Order::generateUniqueInvoice();
             $data['order_date'] = now();
+            $data['order_status'] = $data['order_status'] ?? 'pending';
+            $data['payment_status'] = $data['payment_status'] ?? 'unpaid';
 
             $order = DB::transaction(function () use ($data) {
                 $items = $data['items'];
@@ -51,6 +64,9 @@ class OrderController extends Controller
                     $product = Product::findOrFail($item['product_id']);
                     $product->decrement('stock', $item['quantity']);
                     $product->increment('sold', $item['quantity']);
+
+                    $cart = Cart::where('user_id', $order->user_id)->where('product_id', $item['product_id'])->first();
+                    $cart->delete();
                 }
 
 
@@ -86,25 +102,36 @@ class OrderController extends Controller
             $data = $request->validated();
 
             DB::transaction(function () use ($order, $data) {
-                $items = $data['items'];
-                unset($data['items']);
+                if (isset($data['order_status']) && $data['order_status'] === 'cancelled') {
+                    if ($order->order_status !== 'cancelled') {
+                        foreach ($order->items as $item) {
+                            $product = Product::findOrFail($item->product_id);
+                            $product->increment('stock', $item->quantity);
+                            $product->decrement('sold', $item->quantity);
+                        }
+                    }
 
-                foreach ($order->items as $oldItem) {
-                    $product = Product::findOrFail($oldItem->product_id);
-                    $product->increment('stock', $oldItem->quantity);
-                    $product->decrement('sold', $oldItem->quantity);
-                }
+                    $order->update($data);
+                } else {
+                    $items = $data['items'];
+                    unset($data['items']);
 
-                $order->items()->delete();
+                    foreach ($order->items as $oldItem) {
+                        $product = Product::findOrFail($oldItem->product_id);
+                        $product->increment('stock', $oldItem->quantity);
+                        $product->decrement('sold', $oldItem->quantity);
+                    }
 
-                $order->update($data);
+                    $order->items()->delete();
+                    $order->update($data);
 
-                foreach ($items as $item) {
-                    $order->items()->create($item);
+                    foreach ($items as $item) {
+                        $order->items()->create($item);
 
-                    $product = Product::findOrFail($item['product_id']);
-                    $product->decrement('stock', $item['quantity']);
-                    $product->increment('sold', $item['quantity']);
+                        $product = Product::findOrFail($item['product_id']);
+                        $product->decrement('stock', $item['quantity']);
+                        $product->increment('sold', $item['quantity']);
+                    }
                 }
             });
 
