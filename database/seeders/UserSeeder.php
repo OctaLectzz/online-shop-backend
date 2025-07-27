@@ -30,6 +30,16 @@ class UserSeeder extends Seeder
             'email' => 'john@example.com',
             'password' => Hash::make('password'),
             'phone_number' => '082112345678',
+            'status' => false
+        ]);
+
+        User::create([
+            'avatar' => '1752616915-octalectzz.png',
+            'name' => 'Octavyan Putra Ramadhan',
+            'username' => 'octalectzz',
+            'email' => 'octalectzz@gmail.com',
+            'password' => Hash::make('password'),
+            'phone_number' => '089690220404',
             'status' => true
         ]);
     }

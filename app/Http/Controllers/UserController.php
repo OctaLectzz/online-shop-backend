@@ -34,7 +34,7 @@ class UserController extends Controller
         $data['password'] = Hash::make($data['password']);
 
         if ($request->hasFile('avatar')) {
-            $data['avatar'] = User::uploadAvatar($request->file('avatar'), $data['name']);
+            $data['avatar'] = User::uploadAvatar($request->file('avatar'), $data['username']);
         }
 
         $user = User::create($data);
@@ -66,7 +66,7 @@ class UserController extends Controller
 
         if ($request->hasFile('avatar')) {
             $user->deleteAvatar();
-            $data['avatar'] = User::uploadAvatar($request->file('avatar'), $data['name']);
+            $data['avatar'] = User::uploadAvatar($request->file('avatar'), $data['username']);
         }
 
         $user->update($data);

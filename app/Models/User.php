@@ -50,9 +50,9 @@ class User extends Authenticatable
     }
 
     // Avatar
-    public static function uploadAvatar(UploadedFile $avatar, string $name): string
+    public static function uploadAvatar(UploadedFile $avatar, string $username): string
     {
-        $filename = time() . '-' . Str::slug($name) . '.' . $avatar->getClientOriginalExtension();
+        $filename = time() . '-' . Str::slug($username) . '.' . $avatar->getClientOriginalExtension();
         $avatar->storeAs('avatars', $filename, 'public');
         return $filename;
     }
