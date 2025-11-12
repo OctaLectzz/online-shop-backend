@@ -31,6 +31,7 @@ class OrderRequest extends FormRequest
             'payment_status' => 'nullable|in:unpaid,paid,refunded',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
+            'items.*.product_variant_id' => 'required|exists:product_variants,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.unit_price' => 'required|numeric|min:0',
             'items.*.total_price' => 'required|numeric|min:0'

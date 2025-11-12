@@ -32,6 +32,7 @@ class OrderResource extends JsonResource
                 return [
                     'id' => $item->id,
                     'product_id' => $item->product_id,
+                    'product_variant_id' => $item->product_variant_id,
                     'product' => $item->product ? new ProductResource($item->product) : null,
                     'quantity' => $item->quantity,
                     'unit_price' => $item->unit_price,

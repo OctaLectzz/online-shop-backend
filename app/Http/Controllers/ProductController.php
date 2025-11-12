@@ -6,6 +6,7 @@ use App\Models\Tag;
 use App\Models\Product;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -44,6 +45,45 @@ class ProductController extends Controller
                 // Images
                 if ($request->hasFile('images')) {
                     $product->uploadImages($request->file('images'));
+                }
+
+                // Variants
+                if ($request->filled('variants')) {
+                    foreach ($request->input('variants') as $v) {
+                        $variantData = [
+                            'name'  => $v['name'],
+                            'price' => $v['price'],
+                            'stock' => $v['stock'],
+                        ];
+
+                        if (isset($v['image']) && $v['image'] instanceof \Illuminate\Http\UploadedFile) {
+                            $variantData['image'] = ProductVariant::uploadImage($v['image'], $v['name']);
+                        }
+
+                        $product->variants()->create($variantData);
+                    }
+                }
+
+                // Attributes
+                if ($request->filled('attributes')) {
+                    $attrs = collect($request->input('attributes'))
+                        ->map(fn($a) => [
+                            'name'  => $a['name'],
+                            'lists' => array_values($a['lists']),
+                        ])->all();
+
+                    $product->attributes()->createMany($attrs);
+                }
+
+                // Informations
+                if ($request->filled('informations')) {
+                    $infos = collect($request->input('informations'))
+                        ->map(fn($i) => [
+                            'name'        => $i['name'],
+                            'description' => $i['description'],
+                        ])->all();
+
+                    $product->informations()->createMany($infos);
                 }
 
                 // Tags
@@ -91,11 +131,106 @@ class ProductController extends Controller
             DB::transaction(function () use ($product, $data, $request) {
                 $product->update($data);
 
+                // Images
                 if ($request->hasFile('images')) {
                     $product->deleteImages();
                     $product->uploadImages($request->file('images'));
                 }
 
+                // Variants
+                if ($request->has('variants')) {
+                    $payload = collect($request->input('variants'))->filter(fn($v) => empty($v['_delete']));
+
+                    $keepIds = $payload->pluck('id')->filter()->values()->all();
+
+                    $product->variants()
+                        ->whereNotIn('id', $keepIds ?: [0])
+                        ->delete();
+
+                    foreach ($payload as $v) {
+                        $variantData = [
+                            'name'  => $v['name'],
+                            'price' => $v['price'],
+                            'stock' => $v['stock'],
+                        ];
+
+                        if (isset($v['image']) && $v['image'] instanceof \Illuminate\Http\UploadedFile) {
+                            $variant = $product->variants()->find($v['id']);
+                            if ($variant) {
+                                $variant->deleteImage();
+                            }
+                            $variantData['image'] = ProductVariant::uploadImage($v['image'], $v['name']);
+                        }
+
+                        if (!empty($v['id'])) {
+                            $product->variants()->whereKey($v['id'])->update($variantData);
+                        } else {
+                            $product->variants()->create($variantData);
+                        }
+                    }
+                }
+
+                // Attributes
+                if ($request->has('attributes')) {
+                    $payload = collect($request->input('attributes'))
+                        ->filter(fn($a) => empty($a['_delete']))
+                        ->map(function ($a) {
+                            return [
+                                'id'    => $a['id'] ?? null,
+                                'name'  => $a['name'],
+                                'lists' => array_values($a['lists'] ?? []),
+                            ];
+                        });
+
+                    $keepIds = $payload->pluck('id')->filter()->values()->all();
+
+                    $product->attributes()->whereNotIn('id', $keepIds ?: [0])->delete();
+
+                    foreach ($payload as $a) {
+                        if (!empty($a['id'])) {
+                            $product->attributes()->whereKey($a['id'])->update([
+                                'name'  => $a['name'],
+                                'lists' => $a['lists'],
+                            ]);
+                        } else {
+                            $product->attributes()->create([
+                                'name'  => $a['name'],
+                                'lists' => $a['lists'],
+                            ]);
+                        }
+                    }
+                }
+
+                // Informations
+                if ($request->has('informations')) {
+                    $payload = collect($request->input('informations'))
+                        ->filter(fn($i) => empty($i['_delete']))
+                        ->map(fn($i) => [
+                            'id'          => $i['id'] ?? null,
+                            'name'        => $i['name'],
+                            'description' => $i['description'],
+                        ]);
+
+                    $keepIds = $payload->pluck('id')->filter()->values()->all();
+
+                    $product->informations()->whereNotIn('id', $keepIds ?: [0])->delete();
+
+                    foreach ($payload as $i) {
+                        if (!empty($i['id'])) {
+                            $product->informations()->whereKey($i['id'])->update([
+                                'name'        => $i['name'],
+                                'description' => $i['description'],
+                            ]);
+                        } else {
+                            $product->informations()->create([
+                                'name'        => $i['name'],
+                                'description' => $i['description'],
+                            ]);
+                        }
+                    }
+                }
+
+                // Tags
                 if ($request->tags) {
                     $tagIds = collect($request->tags)->map(function ($name) {
                         return Tag::firstOrCreate(['name' => $name])->id;
@@ -120,10 +255,39 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product->deleteImages();
-        $product->tags()->detach();
-        $product->delete();
+        try {
+            DB::transaction(function () use ($product) {
 
-        return response()->json(['message' => 'Product deleted.']);
+                // Images
+                $product->deleteImages();
+
+                // Variants
+                $product->variants()->each(function ($variant) {
+                    $variant->deleteImage();
+                    $variant->delete();
+                });
+                $product->variants()->delete();
+
+                // Attributes
+                $product->attributes()->delete();
+
+                // Informations
+                $product->informations()->delete();
+
+                // Tags
+                $product->tags()->detach();
+
+                $product->delete();
+            });
+
+            return response()->json(['message' => 'Product deleted successfully.'], 200);
+        } catch (\Throwable $e) {
+            Log::error('Failed to delete product', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'Product failed to delete',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
     }
 }

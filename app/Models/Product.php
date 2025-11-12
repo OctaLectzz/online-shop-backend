@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\ActivityLogger;
+use Illuminate\Http\UploadedFile;
 
 class Product extends Model
 {
@@ -76,6 +77,18 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class);
     }
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+    public function attributes()
+    {
+        return $this->hasMany(ProductAttribute::class);
+    }
+    public function informations()
+    {
+        return $this->hasMany(ProductInformation::class);
+    }
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'product_tags');
@@ -100,6 +113,63 @@ class Product extends Model
 
 class ProductImage extends Model
 {
+    protected $guarded = ['id'];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+}
+
+class ProductVariant extends Model
+{
+    protected $guarded = ['id'];
+
+    // Image
+    public static function uploadImage(UploadedFile $image, string $name): string
+    {
+        $folder = 'products/variants';
+        $filename = time() . '-' . Str::slug($name) . '.' . $image->getClientOriginalExtension();
+        $image->storeAs($folder, $filename, 'public');
+
+        return $filename;
+    }
+    public function deleteImage(): void
+    {
+        $path = 'products/variants/' . $this->image;
+        if ($this->image && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+}
+
+class ProductAttribute extends Model
+{
+    protected $guarded = ['id'];
+
+    protected $casts = [
+        'lists' => 'array'
+    ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+}
+
+class ProductInformation extends Model
+{
+    protected $table = 'product_informations';
+
     protected $guarded = ['id'];
 
     public function product()

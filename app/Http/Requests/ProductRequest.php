@@ -38,8 +38,30 @@ class ProductRequest extends FormRequest
             'width' => 'nullable|integer',
             'length' => 'nullable|integer',
             'status' => 'boolean',
+
+            // Image
             'images' => 'nullable|array',
             'images.*' => 'required|image|mimes:jpg,jpeg,png|max:3072',
+
+            // Variant
+            'variants' => 'sometimes|array',
+            'variants.*.name' => 'required_with:variants|string|max:255',
+            'variants.*.price' => 'required_with:variants|integer|min:0',
+            'variants.*.stock' => 'required_with:variants|integer|min:0',
+            'variants.*.image' => 'nullable',
+
+            // Attribute
+            'attributes' => 'sometimes|array',
+            'attributes.*.name' => 'required_with:attributes|string|max:255',
+            'attributes.*.lists' => 'required_with:attributes|array',
+            'attributes.*.lists.*' => 'string|max:255',
+
+            // Information
+            'informations' => 'sometimes|array',
+            'informations.*.name' => 'required_with:informations|string|max:255',
+            'informations.*.description' => 'required_with:informations|string|max:1000',
+
+            // Tag
             'tags' => 'nullable|array',
             'tags.*' => 'required|string|max:255'
         ];

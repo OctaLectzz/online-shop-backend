@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\OrderRequest;
 use Illuminate\Support\Facades\Log;
@@ -61,9 +62,9 @@ class OrderController extends Controller
                 foreach ($items as $item) {
                     $order->items()->create($item);
 
-                    $product = Product::findOrFail($item['product_id']);
-                    $product->decrement('stock', $item['quantity']);
-                    $product->increment('sold', $item['quantity']);
+                    $productVariant = ProductVariant::findOrFail($item['product_variant_id']);
+                    $productVariant->decrement('stock', $item['quantity']);
+                    $productVariant->increment('sold', $item['quantity']);
 
                     $cart = Cart::where('user_id', $order->user_id)->where('product_id', $item['product_id'])->first();
                     $cart->delete();
@@ -117,9 +118,9 @@ class OrderController extends Controller
                     unset($data['items']);
 
                     foreach ($order->items as $oldItem) {
-                        $product = Product::findOrFail($oldItem->product_id);
-                        $product->increment('stock', $oldItem->quantity);
-                        $product->decrement('sold', $oldItem->quantity);
+                        $productVariant = ProductVariant::findOrFail($oldItem->product_variant_id);
+                        $productVariant->increment('stock', $oldItem->quantity);
+                        $productVariant->decrement('sold', $oldItem->quantity);
                     }
 
                     $order->items()->delete();

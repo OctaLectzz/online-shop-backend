@@ -27,8 +27,7 @@ class CategoryRequest extends FormRequest
         $categoryId = $this->route('category')?->getKey();
 
         return [
-            'slug' => 'required|string|max:255|unique:categories,slug,' . $categoryId,
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:3072',
+            'image' => $categoryId ? 'nullable' : 'nullable|image|mimes:jpg,jpeg,png|max:5120',
             'name' => 'required|string|max:50',
             'description' => 'nullable'
         ];
