@@ -43,7 +43,7 @@
   </header>
   <div class="duration-750 starting:opacity-0 flex w-full items-center justify-center opacity-100 transition-opacity lg:grow">
     <main class="flex w-full max-w-[335px] flex-col-reverse lg:max-w-4xl lg:flex-row">
-      <div class="flex-1 rounded-bl-lg rounded-br-lg bg-white p-6 pb-12 text-[13px] leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-br-none lg:rounded-tl-lg lg:p-20 dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
+      <div class="flex-1 rounded-bl-lg rounded-br-lg bg-white p-6 pb-12 text-[13px] leading-5 shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-br-none lg:rounded-tl-lg lg:p-20 dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
         <h1 class="mb-1 font-bold" style="font-size: 20px; font-weight: bolder;">Online Shop API</h1>
         <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">Online Shop API is a REST-based interface that provides full access to manage user, product, category, tag and transaction data in an e-commerce system. This API supports the authentication process using Laravel Sanctum and is built to be used by frontend
           applications such as web or mobile.</p>

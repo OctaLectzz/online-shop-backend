@@ -28,7 +28,7 @@ class UserRequest extends FormRequest
         $userId = $this->route('user')?->getKey();
 
         return [
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:3072',
+            'avatar' => $userId ? 'nullable' : 'nullable|image|mimes:jpg,jpeg,png|max:5120',
             'name' => 'required|string|max:50',
             'username' => 'required|string|max:20|unique:users,username,' . $userId,
             'email' => 'required|email|unique:users,email,' . $userId,

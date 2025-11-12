@@ -1,0 +1,23 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+        "changepassword",
+        "editprofile",
+        "endauth",
+        "getbyuser",
+        "Illuminatech",
+        "Klimov",
+        "linecap",
+        "linejoin",
+        "mutlipart",
+        "netcoder",
+        "onlineshop",
+        "stackoverflow",
+        "Spatie"
+    ],
+    "ignoreWords": [],
+    "import": []
+}
