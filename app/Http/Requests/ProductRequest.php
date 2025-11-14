@@ -31,13 +31,13 @@ class ProductRequest extends FormRequest
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'required',
-            'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
             'weight' => 'nullable|integer',
             'height' => 'nullable|integer',
             'width' => 'nullable|integer',
             'length' => 'nullable|integer',
             'status' => 'boolean',
+            'use_variant' => 'boolean',
 
             // Image
             'images' => 'nullable|array',

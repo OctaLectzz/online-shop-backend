@@ -18,7 +18,6 @@ class PayResource extends JsonResource
             'id' => $this->id,
             'order_id' => $this->order_id,
             'payment_id' => $this->payment_id,
-            'order' => new OrderResource($this->order),
             'payment' => new PaymentResource($this->payment),
             'transfer_date' => $this->transfer_date,
             'transfer_amount' => $this->transfer_amount,

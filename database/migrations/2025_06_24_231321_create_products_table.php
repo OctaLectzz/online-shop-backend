@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('width')->nullable();
             $table->integer('length')->nullable();
             $table->boolean('status')->default(true);
+            $table->boolean('use_variant')->default(false);
             $table->unsignedBigInteger('sold')->default(0);
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->softDeletes();
@@ -39,7 +40,7 @@ return new class extends Migration
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->string('name');
             $table->unsignedBigInteger('price');
             $table->unsignedBigInteger('stock');

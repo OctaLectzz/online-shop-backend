@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -21,7 +20,7 @@ class ProductResource extends JsonResource
             'slug' => $this->slug,
             'sku' => $this->sku,
             'name' => $this->name,
-            'category' => $this->category->name ?? null,
+            'category' => new CategoryResource($this->category),
             'description' => $this->description,
             'dimensions' => [
                 'weight' => $this->weight,
@@ -30,12 +29,13 @@ class ProductResource extends JsonResource
                 'length' => $this->length
             ],
             'status' => $this->status,
+            'use_variant' => $this->use_variant,
             'created_by' => $this->creator->name ?? null,
 
             // Images
             'images' => $this->images->isNotEmpty()
                 ? $this->images->map(function ($image) {
-                    return Storage::url('products/' . $image->image);
+                    return asset('storage/products/' . $image->image);
                 })->all()
                 : [],
 
@@ -47,7 +47,7 @@ class ProductResource extends JsonResource
                     'price' => (int) $variant->price,
                     'stock' => (int) $variant->stock,
                     'sold' => (int) $variant->sold,
-                    'image' => $variant->image ? Storage::url('products/variants/' . $variant->image) : null,
+                    'image' => $variant->image ? asset('storage/products/variants/' . $variant->image) : null,
                 ];
             })->all(),
 

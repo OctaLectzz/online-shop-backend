@@ -39,6 +39,7 @@ class OrderResource extends JsonResource
                     'total_price' => $item->total_price
                 ];
             }),
+            'pay' => $this->pay ? new PayResource($this->pay) : null,
             'created_at' => $this->created_at
         ];
     }

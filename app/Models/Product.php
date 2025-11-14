@@ -16,6 +16,11 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     // Slug
     public static function generateUniqueSlug(string $name, ?int $ignoreId = null): string
     {
@@ -45,6 +50,10 @@ class Product extends Model
     public function deleteImages(): void
     {
         foreach ($this->images as $img) {
+            if (!empty($keep) && in_array($img->image, $keep, true)) {
+                continue;
+            }
+
             if ($img->image && Storage::disk('public')->exists('products/' . $img->image)) {
                 Storage::disk('public')->delete('products/' . $img->image);
             }

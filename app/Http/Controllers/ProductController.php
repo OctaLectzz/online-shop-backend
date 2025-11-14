@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use App\Models\Product;
-use App\Http\Requests\ProductRequest;
-use App\Http\Resources\ProductResource;
 use App\Models\ProductVariant;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductResource;
 
 class ProductController extends Controller
 {
@@ -132,8 +132,16 @@ class ProductController extends Controller
                 $product->update($data);
 
                 // Images
+                $keepUrls = $request->input('keep_images', []);
+                $keepFilenames = collect($keepUrls)->filter()
+                    ->map(function (string $url) {
+                        $path = parse_url($url, PHP_URL_PATH);
+                        return basename($path);
+                    })
+                    ->values()
+                    ->all();
+                $product->deleteImages($keepFilenames);
                 if ($request->hasFile('images')) {
-                    $product->deleteImages();
                     $product->uploadImages($request->file('images'));
                 }
 
@@ -143,9 +151,7 @@ class ProductController extends Controller
 
                     $keepIds = $payload->pluck('id')->filter()->values()->all();
 
-                    $product->variants()
-                        ->whereNotIn('id', $keepIds ?: [0])
-                        ->delete();
+                    $product->variants()->whereNotIn('id', $keepIds ?: [0])->delete();
 
                     foreach ($payload as $v) {
                         $variantData = [
