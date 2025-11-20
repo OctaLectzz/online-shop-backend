@@ -14,7 +14,7 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         // Tags
-        $tags = ['Baru', 'Diskon', 'Populer'];
+        $tags = ['Baru', 'Diskon', 'Populer', 'iPhone', 'iphone murah', 'iphone 12 pro max'];
         $tagIds = [];
 
         foreach ($tags as $name) {
@@ -47,9 +47,9 @@ Kualitas layar milik iPhone 12 Pro Max juga mendapat upgrade dari Apple. Layar h
 
         // Product Images
         $images = [
-            'iphone-12-pro-max-1.jpg',
-            'iphone-12-pro-max-2.jpg',
-            'iphone-12-pro-max-3.jpg',
+            '1763628487_iphone-12-pro-max-1.jpg',
+            '1763628506_iphone-12-pro-max-2.jpg',
+            '1763629460_iphone-12-pro-max-3.jpg',
         ];
 
         foreach ($images as $img) {
@@ -59,25 +59,25 @@ Kualitas layar milik iPhone 12 Pro Max juga mendapat upgrade dari Apple. Layar h
         // Product Variants
         $variants = [
             [
-                'name'  => 'Silver / 128GB',
+                'name'  => '128 GB',
                 'price' => 11999000,
                 'stock' => 20,
                 'sold'  => 50,
-                'image' => 'variants/iphone-12-pro-max-silver-128.jpg',
+                'image' => '1763636272_iphone-12-pro-max-128-gb.png',
             ],
             [
-                'name'  => 'Graphite / 256GB',
+                'name'  => '256 GB',
                 'price' => 13499000,
                 'stock' => 15,
                 'sold'  => 40,
-                'image' => 'variants/iphone-12-pro-max-graphite-256.jpg',
+                'image' => '1763636272_iphone-12-pro-max-256-gb.png',
             ],
             [
-                'name'  => 'Pacific Blue / 512GB',
+                'name'  => '512 GB',
                 'price' => 15999000,
                 'stock' => 10,
                 'sold'  => 34,
-                'image' => 'variants/iphone-12-pro-max-blue-512.jpg',
+                'image' => '1763636272_iphone-12-pro-max-512-gb.png',
             ],
         ];
 
@@ -90,10 +90,6 @@ Kualitas layar milik iPhone 12 Pro Max juga mendapat upgrade dari Apple. Layar h
             [
                 'name'  => 'Warna',
                 'lists' => ['Silver', 'Graphite', 'Pacific Blue'],
-            ],
-            [
-                'name'  => 'Kapasitas',
-                'lists' => ['128 GB', '256 GB', '512 GB'],
             ],
         ];
 
@@ -123,7 +119,5 @@ Kualitas layar milik iPhone 12 Pro Max juga mendapat upgrade dari Apple. Layar h
 
         // Attach Tags
         $product->tags()->sync($tagIds);
-
-        $this->command->info('✅ ProductSeeder: iPhone 12 Pro Max berhasil dibuat!');
     }
 }

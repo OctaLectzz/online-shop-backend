@@ -42,12 +42,16 @@ class Product extends Model
     public function uploadImages(array $images): void
     {
         foreach ($images as $index => $image) {
-            $filename = $this->slug . '-' . ($index + 1) . '.' . $image->getClientOriginalExtension();
+            if (! $image instanceof UploadedFile) {
+                continue;
+            }
+
+            $filename = time() . '_' . $this->slug . '-' . ($index + 1) . '.' . $image->getClientOriginalExtension();
             $image->storeAs('products', $filename, 'public');
             $this->images()->create(['image' => $filename]);
         }
     }
-    public function deleteImages(): void
+    public function deleteImages(array $keep = []): void
     {
         foreach ($this->images as $img) {
             if (!empty($keep) && in_array($img->image, $keep, true)) {
@@ -134,20 +138,25 @@ class ProductVariant extends Model
 {
     protected $guarded = ['id'];
 
-    // Image
-    public static function uploadImage(UploadedFile $image, string $name): string
+    protected static function booted(): void
     {
-        $folder = 'products/variants';
-        $filename = time() . '-' . Str::slug($name) . '.' . $image->getClientOriginalExtension();
-        $image->storeAs($folder, $filename, 'public');
+        static::deleting(function ($model) {
+            $model->deleteImage();
+        });
+    }
+
+    // Image
+    public static function uploadImage(UploadedFile $image, string $productSlug, string $name): string
+    {
+        $filename = time() . '_' . $productSlug . '-' . Str::slug($name) . '.' . $image->getClientOriginalExtension();
+        $image->storeAs('products/variants', $filename, 'public');
 
         return $filename;
     }
     public function deleteImage(): void
     {
-        $path = 'products/variants/' . $this->image;
-        if ($this->image && Storage::disk('public')->exists($path)) {
-            Storage::disk('public')->delete($path);
+        if ($this->image && Storage::disk('public')->exists('products/variants/' . $this->image)) {
+            Storage::disk('public')->delete('products/variants/' . $this->image);
         }
     }
 

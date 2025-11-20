@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use App\Models\Product;
+use Illuminate\Support\Arr;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -36,10 +38,11 @@ class ProductController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['slug'] = Product::generateUniqueSlug($data['name']);
+            $data['slug'] = $data['slug'] ?? Product::generateUniqueSlug($data['name']);
             $data['created_by'] = Auth::id();
 
             $product = DB::transaction(function () use ($data, $request) {
+                // Create product
                 $product = Product::create($data);
 
                 // Images
@@ -48,49 +51,53 @@ class ProductController extends Controller
                 }
 
                 // Variants
-                if ($request->filled('variants')) {
-                    foreach ($request->input('variants') as $v) {
-                        $variantData = [
-                            'name'  => $v['name'],
-                            'price' => $v['price'],
-                            'stock' => $v['stock'],
-                        ];
+                $variantFiles  = $request->file('variants', []);
 
-                        if (isset($v['image']) && $v['image'] instanceof \Illuminate\Http\UploadedFile) {
-                            $variantData['image'] = ProductVariant::uploadImage($v['image'], $v['name']);
-                        }
+                foreach ($data['variants'] as $index => $variant) {
+                    $variantData = [
+                        'name'  => $variant['name'],
+                        'price' => $variant['price'],
+                        'stock' => $variant['stock'],
+                    ];
 
-                        $product->variants()->create($variantData);
+                    // handle image (Optional)
+                    if (isset($variantFiles[$index]['image'])) {
+                        $file = $variantFiles[$index]['image'];
+
+                        $variantData['image'] = ProductVariant::uploadImage($file, $product->slug, $variant['name']);
                     }
+
+                    $product->variants()->create($variantData);
                 }
 
                 // Attributes
-                if ($request->filled('attributes')) {
-                    $attrs = collect($request->input('attributes'))
-                        ->map(fn($a) => [
-                            'name'  => $a['name'],
-                            'lists' => array_values($a['lists']),
-                        ])->all();
+                if (!empty($data['attributes'])) {
+                    $attrs = collect($data['attributes'])
+                        ->map(fn($attribute) => [
+                            'name'  => $attribute['name'],
+                            'lists' => array_values($attribute['lists']),
+                        ])->toArray();
 
                     $product->attributes()->createMany($attrs);
                 }
 
                 // Informations
-                if ($request->filled('informations')) {
-                    $infos = collect($request->input('informations'))
-                        ->map(fn($i) => [
-                            'name'        => $i['name'],
-                            'description' => $i['description'],
-                        ])->all();
+                if (!empty($data['informations'])) {
+                    $informations = collect($data['informations'])
+                        ->map(fn($information) => [
+                            'name'        => $information['name'],
+                            'description' => $information['description'],
+                        ])->toArray();
 
-                    $product->informations()->createMany($infos);
+                    $product->informations()->createMany($informations);
                 }
 
                 // Tags
-                if ($request->tags) {
-                    $tagIds = collect($request->tags)->map(function ($name) {
+                if (!empty($data['tags'])) {
+                    $tagIds = collect($data['tags'])->map(function ($name) {
                         return Tag::firstOrCreate(['name' => $name])->id;
                     });
+
                     $product->tags()->sync($tagIds);
                 }
 
@@ -108,6 +115,7 @@ class ProductController extends Controller
         }
     }
 
+
     /**
      * Display the specified resource.
      */
@@ -124,125 +132,167 @@ class ProductController extends Controller
     {
         try {
             $data = $request->validated();
-            if ($product->name !== $data['name']) {
-                $data['slug'] = Product::generateUniqueSlug($data['name'], $product->product_id);
-            }
 
-            DB::transaction(function () use ($product, $data, $request) {
-                $product->update($data);
+            $product = DB::transaction(function () use ($data, $request, $product) {
+                $productData = Arr::except($data, ['images', 'variants', 'attributes', 'informations', 'tags', 'keep_images']);
+                $product->update($productData);
 
                 // Images
-                $keepUrls = $request->input('keep_images', []);
-                $keepFilenames = collect($keepUrls)->filter()
-                    ->map(function (string $url) {
-                        $path = parse_url($url, PHP_URL_PATH);
+                $rawKeep = $request->input('keep_images', []);
+                $keep = collect(Arr::wrap($rawKeep))
+                    ->map(function ($value) {
+                        if (!is_string($value)) {
+                            return null;
+                        }
+
+                        $path = parse_url($value, PHP_URL_PATH) ?: $value;
                         return basename($path);
                     })
+                    ->filter()
                     ->values()
                     ->all();
-                $product->deleteImages($keepFilenames);
+
+                $product->deleteImages($keep);
                 if ($request->hasFile('images')) {
                     $product->uploadImages($request->file('images'));
                 }
 
                 // Variants
-                if ($request->has('variants')) {
-                    $payload = collect($request->input('variants'))->filter(fn($v) => empty($v['_delete']));
+                $variantInputs = $data['variants'] ?? [];
+                $variantFiles  = $request->file('variants', []);
 
-                    $keepIds = $payload->pluck('id')->filter()->values()->all();
+                foreach ($variantInputs as $index => $variantData) {
+                    $variantId = $variantData['id'] ?? null;
+                    $rawDelete = $variantData['_delete'] ?? false;
+                    $toDelete  = filter_var($rawDelete, FILTER_VALIDATE_BOOLEAN);
+                    $file      = $variantFiles[$index]['image'] ?? null;
 
-                    $product->variants()->whereNotIn('id', $keepIds ?: [0])->delete();
+                    if ($variantId) {
+                        $variantModel = $product->variants()->whereKey($variantId)->first();
+                        if (!$variantModel) {
+                            continue;
+                        }
 
-                    foreach ($payload as $v) {
-                        $variantData = [
-                            'name'  => $v['name'],
-                            'price' => $v['price'],
-                            'stock' => $v['stock'],
+                        if ($toDelete) {
+                            $variantModel->delete();
+                            continue;
+                        }
+
+                        $updateData = [
+                            'name'  => $variantData['name'],
+                            'price' => $variantData['price'] ?? 0,
+                            'stock' => $variantData['stock'] ?? 0,
                         ];
 
-                        if (isset($v['image']) && $v['image'] instanceof \Illuminate\Http\UploadedFile) {
-                            $variant = $product->variants()->find($v['id']);
-                            if ($variant) {
-                                $variant->deleteImage();
-                            }
-                            $variantData['image'] = ProductVariant::uploadImage($v['image'], $v['name']);
+                        if ($file instanceof \Illuminate\Http\UploadedFile) {
+                            $updateData['image'] = ProductVariant::uploadImage($file, $product->slug, $variantData['name']);
                         }
 
-                        if (!empty($v['id'])) {
-                            $product->variants()->whereKey($v['id'])->update($variantData);
-                        } else {
-                            $product->variants()->create($variantData);
+                        $variantModel->update($updateData);
+                    } else {
+                        if ($toDelete) {
+                            continue;
                         }
+
+                        $createData = [
+                            'name'  => $variantData['name'],
+                            'price' => $variantData['price'] ?? 0,
+                            'stock' => $variantData['stock'] ?? 0,
+                        ];
+
+                        if ($file instanceof \Illuminate\Http\UploadedFile) {
+                            $createData['image'] = ProductVariant::uploadImage($file, $product->slug, $variantData['name']);
+                        }
+
+                        $product->variants()->create($createData);
                     }
                 }
 
                 // Attributes
-                if ($request->has('attributes')) {
-                    $payload = collect($request->input('attributes'))
-                        ->filter(fn($a) => empty($a['_delete']))
-                        ->map(function ($a) {
-                            return [
-                                'id'    => $a['id'] ?? null,
-                                'name'  => $a['name'],
-                                'lists' => array_values($a['lists'] ?? []),
-                            ];
-                        });
+                $attributeInputs = $data['attributes'] ?? [];
 
-                    $keepIds = $payload->pluck('id')->filter()->values()->all();
+                foreach ($attributeInputs as $attributeData) {
+                    $attributeId = $attributeData['id'] ?? null;
+                    $rawDelete   = $attributeData['_delete'] ?? false;
+                    $toDelete    = filter_var($rawDelete, FILTER_VALIDATE_BOOLEAN);
 
-                    $product->attributes()->whereNotIn('id', $keepIds ?: [0])->delete();
-
-                    foreach ($payload as $a) {
-                        if (!empty($a['id'])) {
-                            $product->attributes()->whereKey($a['id'])->update([
-                                'name'  => $a['name'],
-                                'lists' => $a['lists'],
-                            ]);
-                        } else {
-                            $product->attributes()->create([
-                                'name'  => $a['name'],
-                                'lists' => $a['lists'],
-                            ]);
+                    if ($attributeId) {
+                        $attributeModel = $product->attributes()->whereKey($attributeId)->first();
+                        if (!$attributeModel) {
+                            continue;
                         }
+
+                        if ($toDelete) {
+                            $attributeModel->delete();
+                            continue;
+                        }
+
+                        $attributeModel->update([
+                            'name'  => $attributeData['name'],
+                            'lists' => array_values($attributeData['lists'] ?? []),
+                        ]);
+                    } else {
+                        if ($toDelete) {
+                            continue;
+                        }
+
+                        $product->attributes()->create([
+                            'name'  => $attributeData['name'],
+                            'lists' => array_values($attributeData['lists'] ?? []),
+                        ]);
                     }
                 }
 
                 // Informations
-                if ($request->has('informations')) {
-                    $payload = collect($request->input('informations'))
-                        ->filter(fn($i) => empty($i['_delete']))
-                        ->map(fn($i) => [
-                            'id'          => $i['id'] ?? null,
-                            'name'        => $i['name'],
-                            'description' => $i['description'],
-                        ]);
+                $informationInputs = $data['informations'] ?? [];
 
-                    $keepIds = $payload->pluck('id')->filter()->values()->all();
+                foreach ($informationInputs as $informationData) {
+                    $informationId = $informationData['id'] ?? null;
+                    $rawDelete     = $informationData['_delete'] ?? false;
+                    $toDelete      = filter_var($rawDelete, FILTER_VALIDATE_BOOLEAN);
 
-                    $product->informations()->whereNotIn('id', $keepIds ?: [0])->delete();
-
-                    foreach ($payload as $i) {
-                        if (!empty($i['id'])) {
-                            $product->informations()->whereKey($i['id'])->update([
-                                'name'        => $i['name'],
-                                'description' => $i['description'],
-                            ]);
-                        } else {
-                            $product->informations()->create([
-                                'name'        => $i['name'],
-                                'description' => $i['description'],
-                            ]);
+                    if ($informationId) {
+                        $informationModel = $product->informations()->whereKey($informationId)->first();
+                        if (!$informationModel) {
+                            continue;
                         }
+
+                        if ($toDelete) {
+                            $informationModel->delete();
+                            continue;
+                        }
+
+                        $informationModel->update([
+                            'name'        => $informationData['name'],
+                            'description' => $informationData['description'] ?? '',
+                        ]);
+                    } else {
+                        if ($toDelete) {
+                            continue;
+                        }
+
+                        $product->informations()->create([
+                            'name'        => $informationData['name'],
+                            'description' => $informationData['description'] ?? '',
+                        ]);
                     }
                 }
 
                 // Tags
-                if ($request->tags) {
-                    $tagIds = collect($request->tags)->map(function ($name) {
-                        return Tag::firstOrCreate(['name' => $name])->id;
-                    });
+                $tagNames = $data['tags'] ?? null;
+
+                if (is_array($tagNames) && !empty($tagNames)) {
+                    $tagIds = collect($tagNames)
+                        ->filter(fn($name) => filled($name))
+                        ->map(fn($name) => Tag::firstOrCreate(['name' => $name])->id)
+                        ->all();
+
                     $product->tags()->sync($tagIds);
+                } else {
+                    $product->tags()->sync([]);
                 }
+
+                return $product->fresh(['images', 'variants', 'attributes', 'informations', 'tags']);
             });
 
             return new ProductResource($product);
@@ -251,7 +301,7 @@ class ProductController extends Controller
 
             return response()->json([
                 'message' => 'Product failed to update',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], 500);
         }
     }
@@ -263,16 +313,13 @@ class ProductController extends Controller
     {
         try {
             DB::transaction(function () use ($product) {
-
                 // Images
                 $product->deleteImages();
 
                 // Variants
-                $product->variants()->each(function ($variant) {
-                    $variant->deleteImage();
+                $product->variants->each(function (ProductVariant $variant) {
                     $variant->delete();
                 });
-                $product->variants()->delete();
 
                 // Attributes
                 $product->attributes()->delete();

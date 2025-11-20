@@ -49,6 +49,7 @@ return new class extends Migration
         });
 
         Schema::create('product_attributes', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->json('lists');
@@ -56,6 +57,7 @@ return new class extends Migration
         });
 
         Schema::create('product_informations', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('description');

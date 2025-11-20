@@ -22,14 +22,12 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'category' => new CategoryResource($this->category),
             'description' => $this->description,
-            'dimensions' => [
-                'weight' => $this->weight,
-                'height' => $this->height,
-                'width' => $this->width,
-                'length' => $this->length
-            ],
-            'status' => $this->status,
-            'use_variant' => $this->use_variant,
+            'weight' => $this->weight,
+            'height' => $this->height,
+            'width' => $this->width,
+            'length' => $this->length,
+            'status' => $this->status === 1 ? true : false,
+            'use_variant' => $this->use_variant === 1 ? true : false,
             'created_by' => $this->creator->name ?? null,
 
             // Images
@@ -43,29 +41,32 @@ class ProductResource extends JsonResource
             'variants' => $this->variants->map(function ($variant) {
                 return [
                     'id' => $variant->id,
+                    'product_id' => $variant->product_id,
                     'name' => $variant->name,
                     'price' => (int) $variant->price,
                     'stock' => (int) $variant->stock,
                     'sold' => (int) $variant->sold,
-                    'image' => $variant->image ? asset('storage/products/variants/' . $variant->image) : null,
+                    'image' => $variant->image ? asset('storage/products/variants/' . $variant->image) : null
                 ];
             })->all(),
 
             // Attributes
-            'attributes' => $this->attributes->map(function ($attr) {
+            'attributes' => $this->attributes->map(function ($attribute) {
                 return [
-                    'id' => $attr->id,
-                    'name' => $attr->name,
-                    'lists' => $attr->lists ?? [],
+                    'id' => $attribute->id,
+                    'product_id' => $attribute->product_id,
+                    'name' => $attribute->name,
+                    'lists' => $attribute->lists ?? []
                 ];
             })->all(),
 
             // Informations
-            'informations' => $this->informations->map(function ($info) {
+            'informations' => $this->informations->map(function ($information) {
                 return [
-                    'id' => $info->id,
-                    'name' => $info->name,
-                    'description' => $info->description,
+                    'id' => $information->id,
+                    'product_id' => $information->product_id,
+                    'name' => $information->name,
+                    'description' => $information->description
                 ];
             })->all(),
 
